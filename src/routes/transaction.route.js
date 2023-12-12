@@ -1,6 +1,8 @@
 const route = require("express").Router();
-const transactionsController = require("../controllers/transactions.controller")
+const transactionsController = require("../controllers/transactions.controller");
+const authMiddleware = require("../middlewares/auth.middleware");
 
-route.post("/create/:id", transactionsController.create);
+route.post("/create", authMiddleware, transactionsController.create);
+route.get("/", transactionsController.findAll);
 
 module.exports = route;
