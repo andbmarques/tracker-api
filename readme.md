@@ -18,6 +18,7 @@ Lembre-se de configurar um arquivo .env na raiz do projeto com os seguintes dado
 
 - DB_NAME: Nome de usuário do MongoDB
 - DB_PASS: Senha do Banco de Dados
+- SECRET: Uma senha para o JWT
     
 Após isso, para rodar o projeto basta utilizar:
 
