@@ -1,10 +1,12 @@
 const route = require("express").Router();
 const userController = require("../controllers/user.controller");
 
+const { validID, validUser } = require("../middlewares/global.middlewares");
+
 route.post("/", userController.register);
 route.get("/", userController.findAll);
-route.get("/:id", userController.findById);
-route.patch("/:id", userController.update);
-route.delete("/:id", userController.deleteAccount);
+route.get("/:id", validID, validUser, userController.findById);
+route.patch("/:id", validID, validUser, userController.update);
+route.delete("/:id", validID, validUser, userController.deleteAccount);
 
 module.exports = route;

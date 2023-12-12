@@ -41,14 +41,7 @@ const findAll = async (req, res) => {
 
 const findById = async (req, res) => {
   try {
-    const user = await userService.findById(req.params.id);
-
-    if (!user)
-      return res
-        .status(404)
-        .json({ msg: "Usuário não encontrado/cadastrado." });
-
-    res.status(200).json(user);
+    res.status(200).json(req.user);
   } catch (error) {
     res.status(404).json({ msg: "Usuário não encontrado/cadastrado." });
   }
@@ -58,29 +51,14 @@ const update = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    if (!name && !email && !password) {
-      res.status(400).json({
-        msg: "Você precisa preencher algum campo para alterar.",
-      });
-    }
-
-    const id = req.params.id;
-
-    if (!mongoose.Types.ObjectId.isValid(id))
-      return res.status(400).json({ msg: "ID de Usuário invalido." });
-    if (!(await userService.findById(id)))
+    if (!name && !email && !password)
       return res
-        .status(404)
-        .json({ msg: "Usuário não encontrado/cadastrado." });
+        .status(400)
+        .json({
+          msg: "Você deve alterar pelo menos um campo para prosseguir.",
+        });
 
-    const user = await userService.findById(req.params.id);
-
-    if (!user)
-      return res
-        .status(404)
-        .json({ msg: "Usuário não encontrado/cadastrado." });
-
-    await userService.update(id, name, email, password);
+    await userService.update(req.id, name, email, password);
 
     res.status(200).send({ msg: "Usuário alterado com sucesso." });
   } catch (error) {
@@ -90,16 +68,7 @@ const update = async (req, res) => {
 
 const deleteAccount = async (req, res) => {
   try {
-    const id = req.params.id;
-
-    if (!mongoose.Types.ObjectId.isValid(id))
-      return res.status(400).json({ msg: "ID de Usuário invalido." });
-    if (!(await userService.findById(id)))
-      return res
-        .status(404)
-        .json({ msg: "Usuário não encontrado/cadastrado." });
-
-    await userService.deleteAccount(id);
+    await userService.deleteAccount(req.id);
 
     res.status(200).json({ msg: "Usuário deletado com sucesso." });
   } catch (error) {
