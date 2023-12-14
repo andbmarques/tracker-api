@@ -1,9 +1,21 @@
 const transactionsService = require("../services/transactions.service");
+const walletService = require("../services/wallet.service");
+
 
 const create = async (req, res) => {
   try {
     const { title, type, value } = req.body;
     const id = req.id;
+    const walletId = req.params.walletId;
+
+    if (!walletId)
+      return res
+        .status(400)
+        .json({ msg: "Uma wallet deve ser associada com o seu ID." });
+
+    const wallet = await walletService.findById(walletId);
+
+    if (!wallet) return res.status(404).json({ msg: "Wallet não existe." });
 
     if (!title || !type || !value)
       return res.status(400).json({
@@ -15,6 +27,7 @@ const create = async (req, res) => {
       type,
       value,
       owner: id,
+      wallet: walletId,
     });
 
     if (!transaction)
@@ -23,6 +36,19 @@ const create = async (req, res) => {
     res.status(200).json(transaction);
   } catch (error) {
     return res.status(500).json({ msg: "Erro de servidor." });
+  }
+};
+
+const deleteTransaction = async (req, res) => {
+  try {
+    const transactionId = req.params.id;
+    const walletId = req.params.walletId;
+
+    await transactionsService.deleteTransaction(transactionId, walletId);
+
+    res.status(200).json({ msg: "Transaction deletada com sucesso." });
+  } catch (error) {
+    res.status(500).json({ msg: "Erro de servidor.", err: error.message });
   }
 };
 
@@ -55,4 +81,4 @@ const findByUserId = async (req, res) => {
   }
 };
 
-module.exports = { create, findAll, findByUserId };
+module.exports = { create, findAll, findByUserId, deleteTransaction };
