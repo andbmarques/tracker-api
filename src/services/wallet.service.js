@@ -33,7 +33,19 @@ const findByUserId = (id) => Wallet.find({ owner: id });
 
 const findById = (id) => Wallet.findById(id);
 
-const update = async (body, id) => await Wallet.findByIdAndUpdate(id, body);
+const update = async (body, id) => {
+  const wallet = await Wallet.findByIdAndUpdate(id, body);
+  if (!wallet) return res.status(404).json({ msg: "Wallet não encontrada." });
+  if (body.totalIncome) {
+    const newBalance = body.totalIncome - wallet.totalExpense;
+    await Wallet.findByIdAndUpdate(id, { balance: newBalance });
+  }
+  if (body.totalExpense)
+    return res
+      .status(400)
+      .json({ msg: "Não é possível alterar o valor total das despesas." });
+  return wallet;
+};
 
 module.exports = {
   create,
