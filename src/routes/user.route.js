@@ -6,7 +6,7 @@ const { validID, validUser } = require("../middlewares/global.middlewares");
 route.post("/", userController.register);
 route.get("/", userController.findAll);
 route.get("/:id", validID, validUser, userController.findById);
-route.patch("/:id", validID, validUser, userController.update);
+route.patch("/:id", authMiddleware, validUser, userController.update);
 route.delete("/:id", authMiddleware, validUser, userController.deleteAccount);
 
 module.exports = route;
