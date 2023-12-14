@@ -16,14 +16,10 @@ const UserSchema = new mongoose.Schema({
     required: true,
     select: false,
   },
-  transactions: [
+  wallets: [
     {
-      title: "string",
-      type: {
-        type: String,
-        enum: ["Income", "Expense"],
-      },
-      value: Number,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Wallet",
     },
   ],
 });

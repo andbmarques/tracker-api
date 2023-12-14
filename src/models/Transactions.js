@@ -18,12 +18,16 @@ const TransactionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  wallet: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Wallet',
+  },
   createdAt: {
     type: Date,
     default: Date.now()
   }
 });
 
-const Transaction = mongoose.model("Transaction", TransactionSchema);
+const Transaction = mongoose.model("Transactions", TransactionSchema, "transactions");
 
 module.exports = Transaction;

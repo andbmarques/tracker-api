@@ -62,7 +62,7 @@ const update = async (req, res) => {
 
     res.status(200).send({ msg: "Usuário alterado com sucesso." });
   } catch (error) {
-    res.status(500).json({ msg: "Erro de servidor." });
+    res.status(500).json({ msg: "Erro de servidor.", err: error });
   }
 };
 
@@ -72,7 +72,7 @@ const deleteAccount = async (req, res) => {
 
     res.status(200).json({ msg: "Usuário deletado com sucesso." });
   } catch (error) {
-    res.status(500).json({ msg: "Erro de Servidor." });
+    res.status(500).json({ msg: "Erro de Servidor.", err: error });
   }
 };
 
