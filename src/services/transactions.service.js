@@ -34,14 +34,14 @@ const deleteTransaction = async (transactionId, walletId) => {
   const wallet = await Wallet.findById(walletId);
   if (transaction.type === "Income") {
     const newBalance = wallet.balance - transaction.value;
-    const newTotal =  wallet.totalIncome - transaction.value;
+    const newTotal = wallet.totalIncome - transaction.value;
     await Wallet.findByIdAndUpdate(walletId, {
       balance: newBalance,
       totalIncome: newTotal,
     });
   } else {
     const newBalance = wallet.balance + transaction.value;
-    const newTotal =  wallet.totalExpense - transaction.value;
+    const newTotal = wallet.totalExpense - transaction.value;
     await Wallet.findByIdAndUpdate(walletId, {
       balance: newBalance,
       totalExpense: newTotal,
@@ -65,4 +65,19 @@ const findAll = (offset, limit) =>
 
 const findByUserId = (id) => Transactions.find({ owner: id });
 
-module.exports = { create, findAll, findByUserId, deleteTransaction };
+const findById = (id) => Transactions.findById(id);
+
+const findByWalletId = (walletId, offset, limit) =>
+  Transactions.find({ wallet: walletId })
+    .sort({ _id: -1 })
+    .skip(offset)
+    .limit(limit)
+
+module.exports = {
+  create,
+  findAll,
+  findByUserId,
+  deleteTransaction,
+  findById,
+  findByWalletId,
+};

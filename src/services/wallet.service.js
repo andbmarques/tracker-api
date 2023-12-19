@@ -1,5 +1,6 @@
 const Wallet = require("../models/Wallets");
 const User = require("../models/User");
+const Transactions = require("../models/Transactions");
 const { default: mongoose } = require("mongoose");
 
 const create = async (body) => {
@@ -19,6 +20,7 @@ const deleteWallet = async (id, userId) => {
     { $pull: { wallets: new mongoose.Types.ObjectId(id) } },
     { new: true }
   );
+  await Transactions.deleteMany({ wallet: id });
   return await Wallet.findByIdAndDelete(id);
 };
 

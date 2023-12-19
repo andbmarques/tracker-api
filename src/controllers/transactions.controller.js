@@ -1,7 +1,6 @@
 const transactionsService = require("../services/transactions.service");
 const walletService = require("../services/wallet.service");
 
-
 const create = async (req, res) => {
   try {
     const { title, type, value } = req.body;
@@ -81,4 +80,48 @@ const findByUserId = async (req, res) => {
   }
 };
 
-module.exports = { create, findAll, findByUserId, deleteTransaction };
+const findById = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const transaction = await transactionsService.findById(id);
+
+    if (!transaction)
+      return res.status(404).json({ msg: "Transação não encontrada." });
+
+    res.status(200).json(transaction);
+  } catch (error) {
+    res.status(500).json({ msg: "Erro de servidor." });
+  }
+};
+
+const findByWalletId = async (req, res) => {
+  try {
+    let { limit, offset } = req.query;
+    limit = Number(limit);
+    offset = Number(offset);
+    const walletId = req.params.walletId;
+
+    if (!limit) limit = 5;
+    if (!offset) offset = 0;
+
+    const transactions = await transactionsService.findByWalletId(
+      walletId,
+      offset,
+      limit
+    );
+
+    res.status(200).json(transactions);
+  } catch (error) {
+    res.status(500).json({ msg: "Erro de servidor." });
+  }
+};
+
+module.exports = {
+  create,
+  findAll,
+  findByUserId,
+  deleteTransaction,
+  findById,
+  findByWalletId,
+};
